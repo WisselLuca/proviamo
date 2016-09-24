@@ -1,0 +1,306 @@
+
+<% include template/head %>
+
+<body>
+<div class="col-sm-8 col-sm-offset-2">
+    <div class="jumbotron text-center">
+        <h1><span class="fa fa-search"></span> Search</h1>
+
+
+        <form id ="form" action="/find" method="post">
+            <select id="hidden_select" name="hidden_select" style="visibility:hidden ">
+
+            </select>
+            <button id ="endGenomicEntry" type="button" form="form" value="StopGenomicValue" style="visibility: hidden">select Clinic Value</button>
+            Experiment Name:
+            <select id="first-choice" name="experiment" onchange="setTumorName('first-choice')">
+
+            </select>
+<b>
+</b>
+            <!--second raw-->
+            <select id="hidden-until-second-choice" name="hidden-until-second-choice" style="visibility: hidden">
+
+            </select>
+        </form>
+
+        <button type="submit" form="form" value="search" style="visibility: hidden">search</button>
+
+    </div>
+    <hr>
+    <span class="fa fa-sign-in"> Don't have an account?<a href="/signup"> Signup</a></span>
+    <p>Or go <a href="/">home</a>.</p>
+</div>
+<script src=""></script>
+
+<script>
+
+    var variabileglobaledipresenza= false;
+    var genomicdata=0;
+    var genomicname=0;
+    var clinicData=0;
+    var clinicName=0;
+    var justASpace ="<br>";
+
+
+    setExperimentsNames();
+
+    function setExperimentsNames(){
+        $.ajax({
+            url: '/searchtool',
+            type: 'GET',
+            success: function (experiments) {
+                console.log(experiments);
+                var string = "<option value=\"\" selected=\"selected\" ></option>";
+                for(var i = 0; i<experiments.length; i++){
+                    string = string + "<option value=\"" + experiments[i] + "\">" + experiments[i] + "</option>";
+                }
+                $('#form #first-choice').empty().append(string);
+
+            },
+            error: function (xhr, status, error) {
+                console.log('Error: ' + error.message);
+                $('#lblResponse').html('Error connecting to the server.');
+            }
+        });
+        /*$.get('/find',function(experiments){
+           /!* console.log(experiments);*!/
+            var string = "<option value=\"\" selected=\"selected\" ></option>";
+            for(var i = 0; i<experiments.length; i++){
+                console.log(experiments[i]);
+                string = string + "<option value=\"" + experiments[i] + "\">" + experiments[i] + "</option>";
+            }
+            $('#form #first-choice').empty().append(string);
+
+        });*/
+
+    }
+
+
+    function setTumorName(tumorName) {
+        console.log("contenuto tumorName:"+tumorName);
+        var element = document.getElementById(tumorName);
+        var content = element.options[element.selectedIndex].value;
+        console.log("contenuto element:"+element);
+        console.log("contenuto content:"+content);
+
+        if(content.trim()===""){
+            console.log("primo");
+            if(variabileglobaledipresenza===true){
+                console.log("secondo");
+                $('#form #idtumornames').remove();
+                //piu rimuovere le altre cose
+            }
+
+        }
+        else if(variabileglobaledipresenza === false) {
+            console.log(tumorName);
+            console.log(content);
+            //fai query in db poi questo
+            var result = ["salve", "buonasera"];
+            var form = $('#form')
+            var name="<h2> Tumor Name</h2>";
+            $('#form').append(name);
+            $('#form #name_of_tumor').clone(true).attr('style', 'visibility:visible').appendTo(form);
+            $('#form #hidden_select').clone(true).attr('name', 'tumorNames').attr('id', 'idtumornames').attr('style', 'visibility:visible').attr('onchange', "setGenomicNameFields('idtumornames')").appendTo(form)
+
+            /*"setDataFields('first-choice', 'idtumorname')*/
+
+
+            var string = "<option value=\"\" selected=\"selected\" ></option>";
+            for(var i = 0; i<result.length; i++){
+                console.log("terzo");
+                string = string + "<option value=\"" + result[i] + "\">" + result[i] + "</option>";
+            }
+            console.log(string);
+            $('#form #idtumornames').empty().append(string);
+            variabileglobaledipresenza = /*true*/false;
+        }
+    }
+function setGenomicNameFields(idtumornames){
+    //query con  var element = document.getElementById(tumorName);
+   // var content = element.options[element.selectedIndex].value;
+    // per ognuno per prendere l'id e poi fai partire query che mostra gli elementi da mostrare all'utente.
+    //2 aggungere un tasto CErca per far iniziare la query e posizionarlo alla fine (append to inserisce alla fine, farli inserire alla fine -1)
+    //3 ricordarsi sempre di modificare
+    console.log("perche???");
+    console.log("contenuto idtumorname:"+idtumornames);
+    var element= document.getElementById(idtumornames);
+    var content= element.options[element.selectedIndex].value;
+    console.log("contenuto element:"+element);
+    console.log("contenuto content:"+content);
+
+    if(content.trim()===""){
+        console.log("primo");
+        if(variabileglobaledipresenza===true){
+            console.log("secondo");
+            $('#form #genomicName'+[genomicname]).remove();
+            //piu rimuovere le altre cose
+        }
+    }
+    else if(variabileglobaledipresenza === false) {
+        console.log(idtumornames);
+        console.log(content);
+
+        var datas=["come va?","come stai?","te?","tutto bene?","che ore sono?","come'è il tempo?"];
+        console.log(datas.length);
+        var form = $('#form')
+        if(genomicname===0) {
+            var name="<h2> Genetic value</h2>";
+            $('#form').append(name);
+        }
+        if(genomicdata>=2){
+            $('#form #EndGenomicEntry'+[genomicdata]).attr('style', 'visibility:hidden');
+        }
+        $('#form #hidden_select').clone(true).attr('name', 'genomicName').attr('id', 'genomicName'+[genomicname]).attr('style', 'visibility:visible').attr('onchange', "setGenomicDataFields('idtumornames')").appendTo(form);
+        var string = "<option value=\"\" selected=\"selected\" ></option>";
+        for(var i = 0; i<datas.length; i++){
+            console.log("terzo");
+            string = string + "<option value=\"" + datas[i] + "\">" + datas[i] + "</option>";
+        }
+        console.log(string);
+        $('#form #genomicName'+[genomicname]).empty().append(string);
+        genomicname=genomicname+1;
+        variabileglobaledipresenza = false;
+
+    }
+}
+
+    function setGenomicDataFields(idtumornames){
+        console.log("perche???");
+        console.log("contenuto idtumorname:"+idtumornames);
+        var element= document.getElementById(idtumornames);
+        var content= element.options[element.selectedIndex].value;
+        console.log("contenuto element:"+element);
+        console.log("contenuto content:"+content);
+
+        if(content.trim()===""){
+            console.log("primo");
+            if(variabileglobaledipresenza===true){
+                console.log("secondo");
+                $('#form #genomicData'+[genomicdata]).remove();
+                //piu rimuovere le altre cose
+            }
+
+        }
+        else if(variabileglobaledipresenza === false) {
+            console.log(idtumornames);
+            console.log(content);
+
+
+            var datas=["bene","molto bene","anche io bene","certo","troppo tardi","il solito"];
+            console.log(datas.length);
+            var form = $('#form')
+            $('#form #hidden_select').clone(true).attr('name', 'genomicData').attr('id', 'genomicData'+[genomicdata]).attr('style', 'visibility:visible').attr('onchange', "setGenomicNameFields('idtumornames')").appendTo(form);
+            if(genomicdata>= 2){
+                $('#form #endGenomicEntry').clone(true).attr('style', 'visibility:visible').attr('name','endGenomicData'+[genomicdata]).attr('id','endGenomicEntry'+[genomicdata]).attr('onclick',"setClinicNameFields('idtumornames')").appendTo(form);
+            }
+            $('#form').append(justASpace);
+            var string = "<option value=\"\" selected=\"selected\" ></option>";
+            for(var i = 0; i<datas.length; i++){
+                console.log("terzo");
+                string = string + "<option value=\"" + datas[i] + "\">" + datas[i] + "</option>";
+            }
+            console.log(string);
+            $('#form #genomicData'+[genomicdata]).empty().append(string);
+            genomicdata=genomicdata+1;
+
+            variabileglobaledipresenza = false;
+
+        }
+    };
+
+    function setClinicNameFields(idtumornames){
+        console.log("contenuto idtumorname:"+idtumornames);
+        var element= document.getElementById(idtumornames);
+        var content= element.options[element.selectedIndex].value;
+        console.log("contenuto element:"+element);
+        console.log("contenuto content:"+content);
+
+        if(content.trim()===""){
+            console.log("primo");
+            if(variabileglobaledipresenza===true){
+                console.log("secondo");
+                $('#form #clinicName'+[clinicName]).remove();
+                //piu rimuovere le altre cose
+            }
+
+        }
+        else if(variabileglobaledipresenza === false) {
+            console.log(idtumornames);
+            console.log(content);
+
+
+            var datas=["è tardi", "non facciamo in tempo", "fidati", "non ti preccupare", "ce la faremo"];
+            console.log(datas.length);
+            var form = $('#form')
+            if(clinicName===0) {
+                var name="<h2> Clinic Values</h2>";
+                $('#form').append(name);
+            }
+            $('#form #hidden_select').clone(true).attr('name', 'clinicName').attr('id', 'clinicName'+[clinicName]).attr('style', 'visibility:visible').attr('onchange', "setClinicDataFields('idtumornames')").appendTo(form);
+
+            var string = "<option value=\"\" selected=\"selected\" ></option>";
+            for(var i = 0; i<datas.length; i++){
+                console.log("terzo");
+                string = string + "<option value=\"" + datas[i] + "\">" + datas[i] + "</option>";
+            }
+            console.log(string);
+            $('#form #clinicName'+[clinicName]).empty().append(string);
+            clinicName= clinicName+1;
+            if(clinicName>= 4){
+                $('#form #endGenomicEntry').clone(true).attr('style', 'visibility:visible').attr('name','endGenomicData'+[genomicdata]).attr('id','endGenomicEntry'+[genomicdata]).attr('onclick',"setClinicNameFields('idtumornames')").appendTo(form);
+            }
+            variabileglobaledipresenza = false;
+
+        }
+    }
+
+    function setClinicDataFields(idtumornames){
+        console.log("contenuto idtumorname:"+idtumornames);
+        var element= document.getElementById(idtumornames);
+        var content= element.options[element.selectedIndex].value;
+        console.log("contenuto element:"+element);
+        console.log("contenuto content:"+content);
+
+        if(content.trim()===""){
+            console.log("primo");
+            if(variabileglobaledipresenza===true){
+                console.log("secondo");
+                $('#form #clinicName'+[clinicName]).remove();
+                //piu rimuovere le altre cose
+            }
+
+        }
+        else if(variabileglobaledipresenza === false) {
+            console.log(idtumornames);
+            console.log(content);
+
+
+            var datas=["non so cosa scrivere", " davvero non lo so"];
+            console.log(datas.length);
+            var form = $('#form')
+            $('#form #hidden_select').clone(true).attr('name', 'clinicName').attr('id', 'clinicName'+[clinicName]).attr('style', 'visibility:visible').attr('onchange', "setClinicNameFields('idtumornames')").appendTo(form);
+
+            var string = "<option value=\"\" selected=\"selected\" ></option>";
+            for(var i = 0; i<datas.length; i++){
+                console.log("terzo");
+                string = string + "<option value=\"" + datas[i] + "\">" + datas[i] + "</option>";
+            }
+            $('form').append(justASpace);
+            console.log(string);
+            $('#form #clinicName'+[clinicName]).empty().append(string);
+            clinicName= clinicName+1;
+            if(clinicName>= 4){
+                $('#form #endGenomicEntry').clone(true).attr('style', 'visibility:visible').attr('name','endGenomicData'+[genomicdata]).attr('id','endGenomicEntry'+[genomicdata]).attr('onclick',"setClinicNameFields('idtumornames')").appendTo(form);
+            }
+            variabileglobaledipresenza = false;
+
+        }
+    }
+
+</script>
+</body>
+
+
+</html>
