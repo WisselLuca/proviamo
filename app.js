@@ -92,20 +92,18 @@ app.get('/searchtoolGenomicFieldsName', function(req, res){
     var collection= findCollection(req.query.queryarray[0]);
 
     collection.schema.eachPath(function(path) {
-        if(path.indexOf("information")>-1 ||path.indexOf("__v")>-1 || path.indexOf("_id")>-1) {
+        if(path.indexOf("information")>-1 ||path.indexOf("__v")>-1 || path.indexOf("_id")>-1 || path.indexOf("tumor")>-1) {
         }else if(path.indexOf("fields")>-1){
             collection.schema.paths.fields.schema.eachPath(function(stamp){
-                if(path.indexOf("__v")>-1 || path.indexOf("_id")>-1){
+                if(stamp.indexOf("__v")>-1 || stamp.indexOf("_id")>-1){
 
                 }else {
-
                     fields.push(stamp)
                 }
             });
         }else{
             fields.push(path);
         }
-
     });
     res.json(fields);
 });
