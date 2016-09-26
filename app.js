@@ -76,7 +76,6 @@ app.get('/searchtool', function(req, res){
 });
 
 app.get('/searchtooltumorname', function(req, res){
-    var names=[];
     var collection= findCollection(req.query.queryarray[0]);
     /*console.log(collection);*/
     collection.find().distinct('tumor', function(err, tumors) {
@@ -85,38 +84,32 @@ app.get('/searchtooltumorname', function(req, res){
         } else
             res.json(tumors);
     });
-        /*tumors.forEach(function (e){
-            console.log("vengo dal distinct:")
-            console.log(e);
-        })
-    });
-    console.log(query);
-    /!*query.select("tumor");*!/
-    query.exec(function(err, docs){
-        if (err){
-            console.log(err)
-        }else {
-
-            console.log(docs);
-            docs.forEach(function (elem){
-                console.log(elem);
-                /!*names.push(elem);*!/
-                console.log("\n");
-            })
-            if (typeof cb !== "undefined"){
-                cb(docs);
-            }
-            //risposta
-        }
-    });*/
-
-
-
-
-
-
-
 });
+
+
+app.get('/searchtoolGenomicFieldsName', function(req, res){
+    var fields=[];
+    var collection= findCollection(req.query.queryarray[0]);
+
+    collection.schema.eachPath(function(path) {
+        if(path.indexOf("information")>-1 ||path.indexOf("__v")>-1 || path.indexOf("_id")>-1) {
+        }else if(path.indexOf("fields")>-1){
+            collection.schema.paths.fields.schema.eachPath(function(stamp){
+                if(path.indexOf("__v")>-1 || path.indexOf("_id")>-1){
+
+                }else {
+
+                    fields.push(stamp)
+                }
+            });
+        }else{
+            fields.push(path);
+        }
+
+    });
+    res.json(fields);
+});
+
 
 
 function findCollection(experimentName) {
