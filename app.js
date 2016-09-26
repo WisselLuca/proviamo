@@ -20,6 +20,9 @@ var flash = require('connect-flash');
 var session = require('express-session');
 
 
+var dnaseq = require('./model/tumorExperiment/dnaseq');
+
+
 
  var configDB = require('./config/database.js');
 mongoose.connect(configDB.url);
@@ -74,15 +77,57 @@ app.get('/searchtool', function(req, res){
 
 app.get('/searchtooltumorname', function(req, res){
     var names=[];
-    var collection= req.body.queryarray;
-    console.log(collection);
-    console.log(req.body);
-    console.log(queryarray);
+    var collection= findCollection(req.query.queryarray[0]);
+    /*console.log(collection);*/
+    collection.find().distinct('tumor', function(err, tumors) {
+        if (err) {
+            throw err;
+        } else
+            res.json(tumors);
+    });
+        /*tumors.forEach(function (e){
+            console.log("vengo dal distinct:")
+            console.log(e);
+        })
+    });
+    console.log(query);
+    /!*query.select("tumor");*!/
+    query.exec(function(err, docs){
+        if (err){
+            console.log(err)
+        }else {
+
+            console.log(docs);
+            docs.forEach(function (elem){
+                console.log(elem);
+                /!*names.push(elem);*!/
+                console.log("\n");
+            })
+            if (typeof cb !== "undefined"){
+                cb(docs);
+            }
+            //risposta
+        }
+    });*/
 
 
 
 
-})
+
+
+
+});
+
+
+function findCollection(experimentName) {
+    if(experimentName.indexOf("dnaseq")>-1){
+        return dnaseq;
+    }else if(experimentName.indexOf("cnv")>-1){
+        return cnv;
+    }else if(experimentName.indexOf("dnamethylation")>-1){
+        return dnamethylation;
+    }
+};
 
 // mongoose
 

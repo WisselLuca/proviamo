@@ -22,6 +22,7 @@
 
             <div id="idgenomicdiv" name ="genomicdiv"></div>
             <div id="idclinicdiv" name="clinicdiv"></div>
+            <div id="hidden-div" name="hidden-div"></div>
 
             <!--second raw-->
             <select id="hidden-until-second-choice" name="hidden-until-second-choice" style="visibility: hidden">
@@ -52,15 +53,6 @@
     setExperimentsNames();
 
     function setExperimentsNames(){
-        /*var experiments=["ciao", "come va?", "yeaaaaaa"];
-        console.log(experiments);
-        var string = "<option value=\"\" selected=\"selected\" ></option>";
-        for(var i = 0; i<experiments.length; i++){
-            string = string + "<option value=\"" + experiments[i] + "\">" + experiments[i] + "</option>";
-        }
-        $('#form #first-choice').empty().append(string);
-
-*/
         $.ajax({
             url: '/searchtool',
             type: 'GET',
@@ -102,7 +94,7 @@
         else if(variabileglobaledipresenza === false) {
             console.log(tumorName);
             console.log(content);
-            console.log(queryarray);
+            console.log("io sono in setTumorname  "+queryarray);
             //fai query in db poi questo
 
             $.ajax({
@@ -161,6 +153,8 @@ function setGenomicNameFields(idtumornames){
     console.log("contenuto idtumorname:"+idtumornames);
     var element= document.getElementById(idtumornames);
     var content= element.options[element.selectedIndex].value;
+    queryarray.push(content);
+    console.log("io sono in SetGenomicNameFields"+queryarray);
     console.log("contenuto element:"+element);
     console.log("contenuto content:"+content);
 
