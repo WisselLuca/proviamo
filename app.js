@@ -56,21 +56,33 @@ app.use('./querys',querys);
 
 
 app.get('/searchtool', function(req, res){
-    var experiments=["ciao", "come va?", "yeaaaaaa"];
-    var string = "<option value=\"\" selected=\"selected\" ></option>";
-    mongoose.connection.on('open', function(ref){
+    /*var experiments=["ciao", "come va?", "yeaaaaaa"];*/
+    var experiments=[];
+
         mongoose.connection.db.listCollections().toArray(function(err, names) {
             if (err) {
                 console.log(err);
             };
             names.forEach(function(e,i,a) {
-                string= string+"<option value=\""+ e.name+"\" >"+e.name+"</option>"
-                experiments.push(e.name);
+                if(e.name!="users") {
+                    experiments.push(e.name);
+                }
             })
-            res.send(experiments);
+            res.json(experiments);
         })
-    })
 });
+
+app.get('/searchtooltumorname', function(req, res){
+    var names=[];
+    var collection= req.body.queryarray;
+    console.log(collection);
+    console.log(req.body);
+    console.log(queryarray);
+
+
+
+
+})
 
 // mongoose
 
