@@ -250,7 +250,7 @@ function setGenomicNameFields(idtumornames){
                 },
                 success: function (queryresults) {
                     var form = $('#form')
-                    $('#form #hidden_select').clone(true).attr('name', 'genomicData'+[genomicdata]).attr('id', 'genomicData'+[genomicdata]).attr('style', 'visibility:visible').attr('onchange', "addButtonsToGenomic()").appendTo('#divgenomicvalue'+[genomicdata]);
+                    $('#form #hidden_select').clone(true).attr('name', 'genomicData'+[genomicdata]).attr('id', 'genomicData'+[genomicdata]).attr('style', 'visibility:visible').attr('onchange', "addButtonsToGenomic('idtumornames')").appendTo('#divgenomicvalue'+[genomicdata]);
 
                     /*$('#form #idgenomicdiv').append(justASpace);*/
                     var string = "<option value=\"\" selected=\"selected\" ></option>";
@@ -277,6 +277,7 @@ function setGenomicNameFields(idtumornames){
         console.log("contenuto idtumorname:"+idtumornames);
         var element= document.getElementById(idtumornames);
         var content= element.options[element.selectedIndex].value;
+        $('#form #idclinicdiv #addClinicValue').remove();
         var divclinic=$('#idclinicdiv');
 
         console.log("contenuto element:"+element);
@@ -303,8 +304,8 @@ function setGenomicNameFields(idtumornames){
                 },
                 dataType: 'json',
                 success: function (clinicNameFields) {
-                    $('#form #hidden_select').clone(true).attr('name', 'clinicName').attr('id', 'clinicName' + [clinicName]).attr('style', 'visibility:visible').attr('onchange', "setClinicDataFields('clinicName"+[clinicData]+"')").appendTo(divclinic);
-                    console.log(clinicNameFields);
+                    $('#form #hidden-div').clone(true).attr('name','divclinicvalue'+[clinicName]).attr('id','divclinicvalue'+[clinicName]).appendTo('#idclinicdiv');
+                    $('#form #hidden_select').clone(true).attr('name', 'clinicName').attr('id', 'clinicName' + [clinicName]).attr('style', 'visibility:visible').attr('onchange', "setClinicDataFields('clinicName"+[clinicData]+"')").appendTo('#divclinicvalue'+[clinicName]);
                     var string = "<option value=\"\" selected=\"selected\" ></option>";
                     for(var i = 0; i<clinicNameFields.length; i++){
                         string = string + "<option value=\"" + clinicNameFields[i] + "\">" + clinicNameFields[i] + "</option>";
@@ -367,8 +368,6 @@ function setGenomicNameFields(idtumornames){
             console.log(idtumornames);
             console.log(content);
 
-
-
             $.ajax({
                 url: '/searchtoolClinicDataFields',
                 type: 'GET',
@@ -380,9 +379,9 @@ function setGenomicNameFields(idtumornames){
                 success: function (queryresults) {
 
                     var form = $('#form')
-                    $('#form #hidden_select').clone(true).attr('name', 'clinicData').attr('id', 'clinicData'+[clinicData]).attr('style', 'visibility:visible').attr('onchange', "setClinicNameFields('idtumornames')").appendTo('#idclinicdiv');
+                    $('#form #hidden_select').clone(true).attr('name', 'clinicData'+[clinicData]).attr('id', 'clinicData'+[clinicData]).attr('style', 'visibility:visible').attr('onchange', "addButtonsToClinic('idtumornames')").appendTo('#divclinicvalue'+[clinicData]);
 
-                    $('#form #idclinicdiv').append(justASpace);
+                    /*$('#form #idclinicdiv').append(justASpace);*/
                     var string = "<option value=\"\" selected=\"selected\" ></option>";
                     for(var i = 0; i<queryresults.length; i++){
                         console.log("terzo");
@@ -410,6 +409,11 @@ function setGenomicNameFields(idtumornames){
         $('#form #idbutton').clone(true).attr('id','addGenomicValue').attr('name','addGenomicValue').text("Add Value").attr('onclick', "setGenomicNameFields('idtumornames')").appendTo('#idgenomicdiv');
         $('#form #idbutton').clone(true).attr('id','deletebuttongenomic'+[genomicdata-1]).attr('name','deletebuttongenomic'+[genomicdata-1]).attr('onclick', "setGenomicNameFields('idtumornames')").appendTo('#divgenomicvalue'+[genomicdata-1]);
     }
+
+    function addButtonsToClinic(idtumornames){
+        $('#form #idbutton').clone(true).attr('id','addClinicValue').attr('name','addClinicValue').text("Add Value").attr('onclick', "setClinicNameFields('idtumornames')").appendTo('#idclinicdiv');
+        $('#form #idbutton').clone(true).attr('id','deletebuttonclinic'+[clinicData-1]).attr('name','deletebuttonclinic'+[clinicData-1]).attr('onclick', "setClinicNameFields('idtumornames')").appendTo('#divclinicvalue'+[clinicData-1]);
+    };
 </script>
 </body>
 
