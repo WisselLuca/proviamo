@@ -42,6 +42,8 @@
 <script>
 
     var queryarray=[];
+    var genomicqueryarray=[];
+    var clinicqueryarray=[];
     var genomicarray=[];
     var variabileglobaledipresenza= false;
     var genomicdata=0;
@@ -127,20 +129,7 @@
             });
 
 
-/*            var result = ["salve", "buonasera"];
-            var form = $('#form')
-            var name="<h2> Tumor Name</h2>";
-            $('#form').append(name);
-            $('#form #name_of_tumor').clone(true).attr('style', 'visibility:visible').appendTo(form);
-            $('#form #hidden_select').clone(true).attr('name', 'tumorNames').attr('id', 'idtumornames').attr('style', 'visibility:visible').attr('onchange', "setGenomicNameFields('idtumornames')").appendTo(form)
 
-            var string = "<option value=\"\" selected=\"selected\" ></option>";
-            for(var i = 0; i<result.length; i++){
-                console.log("terzo");
-                string = string + "<option value=\"" + result[i] + "\">" + result[i] + "</option>";
-            }
-            console.log(string);
-            $('#form #idtumornames').empty().append(string);*/
             variabileglobaledipresenza = /*true*/false;
         }
     }
@@ -150,11 +139,12 @@ function setGenomicNameFields(idtumornames){
     // per ognuno per prendere l'id e poi fai partire query che mostra gli elementi da mostrare all'utente.
     //2 aggungere un tasto CErca per far iniziare la query e posizionarlo alla fine (append to inserisce alla fine, farli inserire alla fine -1)
     //3 ricordarsi sempre di modificare
-    console.log("perche???");
+
     console.log("contenuto idtumorname:"+idtumornames);
     var element= document.getElementById(idtumornames);
     var content= element.options[element.selectedIndex].value;
-    queryarray.push(content);
+
+
     console.log("io sono in SetGenomicNameFields"+queryarray);
     console.log("contenuto element:"+element);
     console.log("contenuto content:"+content);
@@ -171,12 +161,13 @@ function setGenomicNameFields(idtumornames){
         console.log(idtumornames);
         console.log(content);
 
-        var datas=["come va?","come stai?","te?","tutto bene?","che ore sono?","come'è il tempo?"];
-        var datass=["è tardi", "non facciamo in tempo", "fidati", "non ti preccupare", "ce la faremo"];
-        console.log(datas.length);
+
+
         var form = $('#form')
         var divgenomic = $('#idgenomicdiv')
-        var divclinic=$('#idclinicdiv')
+        /*var divclinic=$('#idclinicdiv');*/
+        queryarray.push(content);
+
         if(genomicname===0) {
             var name="<h2> Genetic value</h2>";
             $('#form').append(name);
@@ -188,16 +179,8 @@ function setGenomicNameFields(idtumornames){
             $("#idclinicdiv").detach().appendTo(form);
         }
         if(clinicName===0 && genomicname===0){
-           /* $('#form #idclinicdiv').cloneNode(true).attr('name','clinicNameDiv').attr('id', 'clinicNameDiv'+[clinicName]).a*/
+            setClinicNameFields(idtumornames);
 
-            $('#form #hidden_select').clone(true).attr('name', 'clinicName').attr('id', 'clinicName'+[clinicName]).attr('style', 'visibility:visible').attr('onchange', "setClinicDataFields('idtumornames')").appendTo(divclinic);
-            var string = "<option value=\"\" selected=\"selected\" ></option>";
-            for(var i = 0; i<datass.length; i++){
-                console.log("terzo");
-                string = string + "<option value=\"" + datass[i] + "\">" + datass[i] + "</option>";
-            }
-            $('#form #idclinicdiv #clinicName'+[clinicName]).empty().append(string);
-            clinicName=clinicName+1;
         };
         if(genomicname===0) {
             $.ajax({
@@ -207,8 +190,7 @@ function setGenomicNameFields(idtumornames){
                 data: {queryarray: queryarray},
                 success: function (listGenomicFields) {
                     genomicarray=listGenomicFields;
-
-                    $('#form #hidden_select').clone(true).attr('name', 'genomicName').attr('id', 'genomicName' + [genomicname]).attr('style', 'visibility:visible').attr('onchange', "setGenomicDataFields('idtumornames')").appendTo(divgenomic);
+                    $('#form #hidden_select').clone(true).attr('name', 'genomicName').attr('id', 'genomicName' + [genomicname]).attr('style', 'visibility:visible').attr('onchange', "setGenomicDataFields('genomicName"+[genomicdata]+"')").appendTo(divgenomic);
                     var stringg = "<option value=\"\" selected=\"selected\" ></option>";
                     for (var i = 0; i < listGenomicFields.length; i++) {
                         console.log("terzo");
@@ -224,7 +206,7 @@ function setGenomicNameFields(idtumornames){
                 }
             });
         }else {
-            $('#form #hidden_select').clone(true).attr('name', 'genomicName').attr('id', 'genomicName' + [genomicname]).attr('style', 'visibility:visible').attr('onchange', "setGenomicDataFields('idtumornames')").appendTo(divgenomic);
+            $('#form #hidden_select').clone(true).attr('name', 'genomicName').attr('id', 'genomicName' + [genomicname]).attr('style', 'visibility:visible').attr('onchange', "setGenomicDataFields('genomicName"+[genomicdata]+"')").appendTo(divgenomic);
             var stringg = "<option value=\"\" selected=\"selected\" ></option>";
             for (var i = 0; i < genomicarray.length; i++) {
                 console.log("terzo");
@@ -237,8 +219,8 @@ function setGenomicNameFields(idtumornames){
     }
 }
 
-    function setGenomicDataFields(idtumornames){
-        var element= document.getElementById(idtumornames);
+    function setGenomicDataFields(clinicName){
+        var element= document.getElementById(clinicName);
         var content= element.options[element.selectedIndex].value;
 
 
@@ -252,24 +234,38 @@ function setGenomicNameFields(idtumornames){
 
         }
         else if(variabileglobaledipresenza === false) {
-            console.log(idtumornames);
+            genomicqueryarray.push(content);
+            console.log(clinicName);
             console.log(content);
 
-            var datas=["bene","molto bene","anche io bene","certo","troppo tardi","il solito"];
-            console.log(datas.length);
-            var form = $('#form')
-            $('#form #hidden_select').clone(true).attr('name', 'genomicData').attr('id', 'genomicData'+[genomicdata]).attr('style', 'visibility:visible').attr('onchange', "setGenomicNameFields('idtumornames')").appendTo('#idgenomicdiv');
+            $.ajax({
+                url: '/searchtoolGenomicFieldsData',
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    queryarray: queryarray,
+                    genomicqueryarray:genomicqueryarray
+                },
+                success: function (queryresults) {
+                    var form = $('#form')
+                    $('#form #hidden_select').clone(true).attr('name', 'genomicData').attr('id', 'genomicData'+[genomicdata]).attr('style', 'visibility:visible').attr('onchange', "setGenomicNameFields('idtumornames')").appendTo('#idgenomicdiv');
 
-            $('#form #idgenomicdiv').append(justASpace);
-            var string = "<option value=\"\" selected=\"selected\" ></option>";
-            for(var i = 0; i<datas.length; i++){
-                console.log("terzo");
-                string = string + "<option value=\"" + datas[i] + "\">" + datas[i] + "</option>";
-            }
-            console.log(string);
-            $('#form #idgenomicdiv #genomicData'+[genomicdata]).empty().append(string);
-            genomicdata=genomicdata+1;
+                    $('#form #idgenomicdiv').append(justASpace);
+                    var string = "<option value=\"\" selected=\"selected\" ></option>";
+                    for(var i = 0; i<queryresults.length; i++){
+                        console.log("terzo");
+                        string = string + "<option value=\"" + queryresults[i] + "\">" + queryresults[i] + "</option>";
+                    }
+                    console.log(string);
+                    $('#form #idgenomicdiv #genomicData'+[genomicdata]).empty().append(string);
+                    genomicdata=genomicdata+1;
 
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error: ' + error.message);
+                    $('#lblResponse').html('Error connecting to the server.');
+                }
+            });
             variabileglobaledipresenza = false;
 
         }
@@ -279,6 +275,8 @@ function setGenomicNameFields(idtumornames){
         console.log("contenuto idtumorname:"+idtumornames);
         var element= document.getElementById(idtumornames);
         var content= element.options[element.selectedIndex].value;
+        var divclinic=$('#idclinicdiv');
+
         console.log("contenuto element:"+element);
         console.log("contenuto content:"+content);
 
@@ -295,8 +293,33 @@ function setGenomicNameFields(idtumornames){
             console.log(idtumornames);
             console.log(content);
 
+            $.ajax({
+                url: '/searchtoolClinicNameFields',
+                type: 'GET',
+                data:{
+                    queryarray: queryarray
+                },
+                dataType: 'json',
+                success: function (clinicNameFields) {
+                    $('#form #hidden_select').clone(true).attr('name', 'clinicName').attr('id', 'clinicName' + [clinicName]).attr('style', 'visibility:visible').attr('onchange', "setClinicDataFields('clinicName"+[clinicData]+"')").appendTo(divclinic);
+                    console.log(clinicNameFields);
+                    var string = "<option value=\"\" selected=\"selected\" ></option>";
+                    for(var i = 0; i<clinicNameFields.length; i++){
+                        string = string + "<option value=\"" + clinicNameFields[i] + "\">" + clinicNameFields[i] + "</option>";
+                    }
+                    $('#form #idclinicdiv #clinicName'+[clinicData]).empty().append(string);
+                    clinicName=clinicName+1;
 
-            var datas=["è tardi", "non facciamo in tempo", "fidati", "non ti preccupare", "ce la faremo"];
+
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error: ' + error.message);
+                    $('#lblResponse').html('Error connecting to the server.');
+                }
+            });
+
+
+            /*var datas=["è tardi", "non facciamo in tempo", "fidati", "non ti preccupare", "ce la faremo"];
             console.log(datas.length);
             var form = $('#form')
             if(clinicName===0) {
@@ -312,7 +335,7 @@ function setGenomicNameFields(idtumornames){
             }
             console.log(string);
             $('#form #clinicName'+[clinicName]).empty().append(string);
-            clinicName= clinicName+1;
+            clinicName= clinicName+1;*/
 /*            if(clinicName>= 4){
                 $('#form #endGenomicEntry').clone(true).attr('style', 'visibility:visible').attr('name','endGenomicData'+[genomicdata]).attr('id','endGenomicEntry'+[genomicdata]).attr('onclick',"setClinicNameFields('idtumornames')").appendTo(form);
             }*/
@@ -338,27 +361,43 @@ function setGenomicNameFields(idtumornames){
 
         }
         else if(variabileglobaledipresenza === false) {
+            clinicqueryarray.push(content);
             console.log(idtumornames);
             console.log(content);
 
 
-            var datas=["non so cosa scrivere", " davvero non lo so"];
-            console.log(datas.length);
-            var form = $('#form')
-            $('#form #hidden_select').clone(true).attr('name', 'clinicName').attr('id', 'clinicName'+[clinicName]).attr('style', 'visibility:visible').attr('onchange', "setClinicNameFields('idtumornames')").appendTo(form);
 
-            var string = "<option value=\"\" selected=\"selected\" ></option>";
-            for(var i = 0; i<datas.length; i++){
-                console.log("terzo");
-                string = string + "<option value=\"" + datas[i] + "\">" + datas[i] + "</option>";
-            }
-            $('form').append(justASpace);
-            console.log(string);
-            $('#form #clinicName'+[clinicName]).empty().append(string);
-            clinicName= clinicName+1;
-            if(clinicName>= 4){
-                $('#form #endGenomicEntry').clone(true).attr('style', 'visibility:visible').attr('name','endGenomicData'+[genomicdata]).attr('id','endGenomicEntry'+[genomicdata]).attr('onclick',"setClinicNameFields('idtumornames')").appendTo(form);
-            }
+            $.ajax({
+                url: '/searchtoolClinicDataFields',
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    queryarray: queryarray,
+                    clinicqueryarray:clinicqueryarray
+                },
+                success: function (queryresults) {
+
+                    var form = $('#form')
+                    $('#form #hidden_select').clone(true).attr('name', 'clinicData').attr('id', 'clinicData'+[clinicData]).attr('style', 'visibility:visible').attr('onchange', "setClinicNameFields('idtumornames')").appendTo('#idclinicdiv');
+
+                    $('#form #idclinicdiv').append(justASpace);
+                    var string = "<option value=\"\" selected=\"selected\" ></option>";
+                    for(var i = 0; i<queryresults.length; i++){
+                        console.log("terzo");
+                        string = string + "<option value=\"" + queryresults[i] + "\">" + queryresults[i] + "</option>";
+                    }
+                    console.log(string);
+                    $('#form #idclinicdiv #clinicData'+[clinicData]).empty().append(string);
+                    clinicData= clinicData+1;
+
+
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error: ' + error.message);
+                    $('#lblResponse').html('Error connecting to the server.');
+                }
+            });
+
             variabileglobaledipresenza = false;
 
         }

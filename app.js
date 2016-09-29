@@ -53,8 +53,6 @@ app.use('/', routes);
 app.use('./users', users);
 app.use('./profile', profile);
 app.use('./querys',querys);
-/*app.use('./searchtool',searchtool);*/
-
 
 
 
@@ -108,6 +106,82 @@ app.get('/searchtoolGenomicFieldsName', function(req, res){
     res.json(fields);
 });
 
+app.get('/searchtoolGenomicFieldsData', function(req, res){
+    var collection= findCollection(req.query.queryarray[0]);
+
+        if(req.query.genomicqueryarray[0].indexOf("aliquote")>-1 || req.query.genomicqueryarray[0].indexOf("person")>-1 || req.query.genomicqueryarray[0].indexOf("tissue")>-1) {
+
+            collection.find({'tumor': req.query.queryarray[1]}).distinct(req.query.genomicqueryarray[req.query.genomicqueryarray.length-1], function (err, item) {
+                if (err) {
+                    throw err
+                }else {
+                    console.log(item);
+                    res.json(item);
+                }
+            });
+        }else{
+            collection.find({'tumor': req.query.queryarray[1]}).distinct('fields.'+req.query.genomicqueryarray[req.query.genomicqueryarray.length-1], function (err, item) {
+                if (err) {
+                    throw err
+                }else {
+                    console.log(item);
+                    res.json(item);
+                }
+            });
+        };
+});
+
+
+app.get('/searchtoolClinicNameFields', function(req, res){
+
+    var collection= findCollection(req.query.queryarray[0]);
+    console.log(req.query.queryarray[1]);
+
+    collection.find({'tumor': req.query.queryarray[1]}).distinct('information.name' , function(err, item){
+        if(err){
+            throw err;
+        }else{
+            if(item.indexOf("")>-1) {
+                res.json(item);
+            }
+        }
+    })
+});
+
+
+app.get('/searchtoolClinicDataFields', function(req, res){
+    var collection= findCollection(req.query.queryarray[0]);
+    var fieldsana=[];
+
+    var query =collection.find({'tumor':req.query.queryarray[1]} ,{_id: 0, information: {$elemMatch: {name: req.query.clinicqueryarray[req.query.clinicqueryarray.length-1]}}});
+    query.select(" information.data information.name ");
+    query.exec(function(err, docs){
+        if (err){
+            console.log(err)
+        }else {
+
+
+            docs.forEach(function (elem){
+                if(fieldsana.indexOf(elem.information[0].data)>-1){
+
+                }else{
+                    fieldsana.push(elem.information[0].data);
+                }
+            })
+            if (typeof cb !== "undefined"){
+                cb(docs);
+            }
+            res.json(fieldsana);
+        }
+    });
+    
+});
+
+
+function cutString(string){
+
+
+}
 
 
 function findCollection(experimentName) {
