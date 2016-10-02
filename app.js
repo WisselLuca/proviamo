@@ -13,6 +13,7 @@ var profile= require('./routes/profile');
 var querys= require('./routes/querys');
 var searchtool= require('./routes/searchtool');
 
+
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var mongoose = require('mongoose');
@@ -178,10 +179,6 @@ app.get('/searchtoolClinicDataFields', function(req, res){
 });
 
 
-function cutString(string){
-
-
-}
 
 
 function findCollection(experimentName) {
@@ -194,7 +191,44 @@ function findCollection(experimentName) {
     }
 };
 
-// mongoose
+app.post('/find', function (req, res){
+
+    for(var i=0; i<req.body.clinicName.length; i++){
+        console.log(req.body.clinicName[i]);
+        console.log(req.body.clinicData[i]);
+    }
+    var finalString="";
+    var stringClinicInformation="{'fields': {'$elemMatch': {";
+    for(var i=0; i<req.body.genomicName.length; i++) {
+        if (i < req.body.genomicName.length) {
+           finalString =finalString+stringClinicInformation+ "'"+ req.body.genomicName[i] +"'  : '" + req.body.genomicData[i] + "'}}},";
+        }else if(i=req.body.genomicName.length-1){
+            finalString = finalString + stringClinicInformation + "'"+ req.body.genomicName[i] +"'  : '" + req.body.genomicData[i] + "'}}}";
+        }
+    }
+    console.log(finalString);
+    var a=[];
+    var collection= findCollection(req.body.experiment);
+    var query= collection.find({'tumor': req.body.tumorNames},{_id:0});
+    query.select("aliquote");
+    query.exec(function(err, docs){
+        if (err){
+            console.log(err)
+        }else {
+            docs.forEach(function (elem){
+                a.push(elem);
+                console.log("\n");
+            })
+            if (typeof cb !== "undefined"){
+                cb(docs);
+            }
+            res.send("hello"+a);
+        }
+    });
+    /*res.send("hello");*/
+
+
+});
 
 
 // catch 404 and forward to error handler
