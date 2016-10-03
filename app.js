@@ -195,35 +195,77 @@ app.post('/find', function (req, res){
     console.log(req.body.experiment);
     console.log(req.body.tumorNames);
     var finalString=[];
-    /*var stringClinicInformation="{'fields': {'$elemMatch': {";
-    for(var i=0; i<req.body.genomicName.length; i++) {
-        if (i < req.body.genomicName.length) {
-           finalString =finalString+stringClinicInformation+ "'"+ req.body.genomicName[i] +"'  : '" + req.body.genomicData[i] + "'}}},";
-        }else if(i=req.body.genomicName.length-1){
-            finalString = finalString + stringClinicInformation + "'"+ req.body.genomicName[i] +"'  : '" + req.body.genomicData[i] + "'}}}";
-        }
-    }*/
+
 
     for(var i=0; i<req.body.genomicName.length; i++) {
-        if(req.body.genomicName[i].indexOf("chr")>-1){
-            var obj={fields:{$elemMatch:{chr:req.body.genomicData[i]}}};
+        if(req.body.genomicName[i]==="tissue"){
+            var obj={tissue:req.body.genomicData[i]};
             finalString.push(obj);
-        }else if(req.body.genomicName[i].indexOf("end")>-1){
-            var obj={fields:{$elemMatch:{end:req.body.genomicData[i]}}};
+        }else if(req.body.genomicName[i]==="person_id"){
+            var obj={person_id:req.body.genomicData[i]};
             finalString.push(obj);
-        }else if(req.body.genomicName[i].indexOf("strand")>-1){
-            var obj={fields:{$elemMatch:{strand:req.body.genomicData[i]}}};
-            finalString.push(obj);
-        }else if(req.body.genomicName[i].indexOf("aliquote")>-1){
+        }else if(req.body.genomicName[i]==="aliquote"){
             var obj={aliquote:req.body.genomicData[i]};
             finalString.push(obj);
-        }else if(req.body.genomicName[i].indexOf("start")>-1){
+        }else if(req.body.genomicName[i]==="chr"){
+            var obj={fields:{$elemMatch:{chr:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="start"){
             var obj={fields:{$elemMatch:{start:req.body.genomicData[i]}}};
             finalString.push(obj);
-        }else if(req.body.genomicName[i].indexOf("end")>-1){
-            var obj = {fields: {$elemMatch: {end: req.body.genomicData[i]}}};
+        }else if(req.body.genomicName[i]==="end"){
+            var obj={fields:{$elemMatch:{end:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="strand"){
+            var obj={fields:{$elemMatch:{strand:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="hugo_symbol"){
+            var obj={fields:{$elemMatch:{hugo_symbol:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="entrez_gene_id"){
+            var obj={fields:{$elemMatch:{entrez_gene_id:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="variant_classification"){
+            var obj={fields:{$elemMatch:{hugo_symbol:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="variant_classification"){
+            var obj={fields:{$elemMatch:{hugo_symbol:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="variant_type"){
+            var obj={fields:{$elemMatch:{variant_type:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="reference_allele"){
+            var obj={fields:{$elemMatch:{reference_allele:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="tumor_seq_allele1"){
+            var obj={fields:{$elemMatch:{tumor_seq_allele1:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="tumor_seq_allele2"){
+            var obj={fields:{$elemMatch:{tumor_seq_allele2:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="dbsnp_rs"){
+            var obj={fields:{$elemMatch:{dbsnp_rs:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="tumor_sample_barcode"){
+            var obj={fields:{$elemMatch:{tumor_sample_barcode:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="matched_norm_sample_barcode"){
+            var obj={fields:{$elemMatch:{matched_norm_sample_barcode:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="match_norm_seq_allele1"){
+            var obj={fields:{$elemMatch:{match_norm_seq_allele1:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="match_norm_seq_allele2"){
+            var obj={fields:{$elemMatch:{match_norm_seq_allele2:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i]==="matched_norm_sample_uuid"){
+            var obj={fields:{$elemMatch:{matched_norm_sample_uuid:req.body.genomicData[i]}}};
             finalString.push(obj);
         }
+
+
+
+
     }
 
 
