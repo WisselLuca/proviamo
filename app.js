@@ -64,19 +64,18 @@ app.get('/searchtool', function(req, res){
         mongoose.connection.db.listCollections().toArray(function(err, names) {
             if (err) {
                 console.log(err);
-            };
+            }
             names.forEach(function(e,i,a) {
                 if(e.name!="users") {
                     experiments.push(e.name);
                 }
-            })
+            });
             res.json(experiments);
         })
 });
 
 app.get('/searchtooltumorname', function(req, res){
     var collection= findCollection(req.query.queryarray[0]);
-    /*console.log(collection);*/
     collection.find().distinct('tumor', function(err, tumors) {
         if (err) {
             throw err;
@@ -109,14 +108,12 @@ app.get('/searchtoolGenomicFieldsName', function(req, res){
 
 app.get('/searchtoolGenomicFieldsData', function(req, res){
     var collection= findCollection(req.query.queryarray[0]);
-
-        if(req.query.genomicqueryarray[0].indexOf("aliquote")>-1 || req.query.genomicqueryarray[0].indexOf("person")>-1 || req.query.genomicqueryarray[0].indexOf("tissue")>-1) {
+        if(req.query.genomicqueryarray[req.query.genomicqueryarray.length-1].indexOf("aliquote")>-1 || req.query.genomicqueryarray[req.query.genomicqueryarray.length-1].indexOf("person")>-1 || req.query.genomicqueryarray[req.query.genomicqueryarray.length-1].indexOf("tissue")>-1) {
 
             collection.find({'tumor': req.query.queryarray[1]}).distinct(req.query.genomicqueryarray[req.query.genomicqueryarray.length-1], function (err, item) {
                 if (err) {
                     throw err
                 }else {
-                    console.log(item);
                     res.json(item);
                 }
             });
@@ -125,18 +122,16 @@ app.get('/searchtoolGenomicFieldsData', function(req, res){
                 if (err) {
                     throw err
                 }else {
-                    console.log(item);
                     res.json(item);
                 }
             });
-        };
+        }
 });
 
 
 app.get('/searchtoolClinicNameFields', function(req, res){
 
     var collection= findCollection(req.query.queryarray[0]);
-    console.log(req.query.queryarray[1]);
 
     collection.find({'tumor': req.query.queryarray[1]}).distinct('information.name' , function(err, item){
         if(err){
@@ -168,7 +163,7 @@ app.get('/searchtoolClinicDataFields', function(req, res){
                 }else{
                     fieldsana.push(elem.information[0].data);
                 }
-            })
+            });
             if (typeof cb !== "undefined"){
                 cb(docs);
             }
@@ -189,39 +184,70 @@ function findCollection(experimentName) {
     }else if(experimentName.indexOf("dnamethylation")>-1){
         return dnamethylation;
     }
-};
-
+}
 app.post('/find', function (req, res){
+    console.log(req.body);
+    console.log(req.body.genomicName);
+    console.log(req.body.genomicData);
+    console.log(req.body.clinicName);
+    console.log(req.body.clinicData);
 
-    for(var i=0; i<req.body.clinicName.length; i++){
-        console.log(req.body.clinicName[i]);
-        console.log(req.body.clinicData[i]);
-    }
-    var finalString="";
-    var stringClinicInformation="{'fields': {'$elemMatch': {";
+    console.log(req.body.experiment);
+    console.log(req.body.tumorNames);
+    var finalString=[];
+    /*var stringClinicInformation="{'fields': {'$elemMatch': {";
     for(var i=0; i<req.body.genomicName.length; i++) {
         if (i < req.body.genomicName.length) {
            finalString =finalString+stringClinicInformation+ "'"+ req.body.genomicName[i] +"'  : '" + req.body.genomicData[i] + "'}}},";
         }else if(i=req.body.genomicName.length-1){
             finalString = finalString + stringClinicInformation + "'"+ req.body.genomicName[i] +"'  : '" + req.body.genomicData[i] + "'}}}";
         }
+    }*/
+
+    for(var i=0; i<req.body.genomicName.length; i++) {
+        if(req.body.genomicName[i].indexOf("chr")>-1){
+            var obj={fields:{$elemMatch:{chr:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i].indexOf("end")>-1){
+            var obj={fields:{$elemMatch:{end:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i].indexOf("strand")>-1){
+            var obj={fields:{$elemMatch:{strand:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i].indexOf("aliquote")>-1){
+            var obj={aliquote:req.body.genomicData[i]};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i].indexOf("start")>-1){
+            var obj={fields:{$elemMatch:{start:req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }else if(req.body.genomicName[i].indexOf("end")>-1){
+            var obj = {fields: {$elemMatch: {end: req.body.genomicData[i]}}};
+            finalString.push(obj);
+        }
     }
+
+
+
+
+
     console.log(finalString);
     var a=[];
     var collection= findCollection(req.body.experiment);
-    var query= collection.find({'tumor': req.body.tumorNames},{_id:0});
+    var query= collection.find({'tumor': req.body.tumorNames, $and:finalString},{_id:0});
     query.select("aliquote");
     query.exec(function(err, docs){
         if (err){
             console.log(err)
         }else {
             docs.forEach(function (elem){
+                console.log(elem);
                 a.push(elem);
                 console.log("\n");
-            })
+            });
             if (typeof cb !== "undefined"){
                 cb(docs);
             }
+            console.log(a);
             res.send("hello"+a);
         }
     });

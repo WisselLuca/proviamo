@@ -111,7 +111,7 @@
                 data:{queryarray:queryarray},
                 success: function (listtumornames) {
 
-                    var form = $('#form')
+                    var form = $('#form');
                     var name="<h2 id='nameTumorname'> Tumor Name</h2>";
                     $('#form').append(name);
                     $('#form #name_of_tumor').clone(true).attr('style', 'visibility:visible').appendTo(form);
@@ -158,7 +158,7 @@ function setGenomicNameFields(idtumornames){
     }
     else if(variabileglobaledipresenza === false) {
 
-        var form = $('#form')
+        var form = $('#form');
         queryarray.push(content);
 
         if(genomicname===0) {
@@ -175,7 +175,7 @@ function setGenomicNameFields(idtumornames){
             $('#idbutton').clone(true).attr('style', 'visibility:visible').appendTo('#wrappertumorname');
             setClinicNameFields(idtumornames);
 
-        };
+        }
         if(genomicname===0) {
             $.ajax({
                 url: '/searchtoolGenomicFieldsName',
@@ -213,8 +213,7 @@ function setGenomicNameFields(idtumornames){
         }
         variabileglobaledipresenza = false;
     }
-};
-
+}
     function setGenomicDataFields(clinicName){
         var element= document.getElementById(clinicName);
         var content= element.options[element.selectedIndex].value;
@@ -243,7 +242,7 @@ function setGenomicNameFields(idtumornames){
                     genomicqueryarray:genomicNameQueryArray
                 },
                 success: function (queryresults) {
-                    var form = $('#form')
+                    var form = $('#form');
                     $('#form #hidden_select').clone(true).attr('name', 'genomicData').attr('id', 'genomicData'+[genomicdata]).attr('style', 'visibility:visible').attr('onchange', "addButtonsToGenomic('genomicData"+[genomicdata]+"')").appendTo('#divgenomicvalue'+[genomicdata]);
 
                     /*$('#form #idgenomicdiv').append(justASpace);*/
@@ -264,8 +263,7 @@ function setGenomicNameFields(idtumornames){
             variabileglobaledipresenza = false;
 
         }
-    };
-
+    }
     function setClinicNameFields(idtumornames){
 
         console.log(clinicNameQueryArray);
@@ -354,7 +352,7 @@ function setGenomicNameFields(idtumornames){
                 },
                 success: function (queryresults) {
 
-                    var form = $('#form')
+                    var form = $('#form');
                     $('#form #hidden_select').clone(true).attr('name', 'clinicData').attr('id', 'clinicData'+[clinicData]).attr('style', 'visibility:visible').attr('onchange', "addButtonsToClinic('clinicData"+[clinicData]+"')").appendTo('#divclinicvalue'+[clinicData]);
 
                     /*$('#form #idclinicdiv').append(justASpace);*/
@@ -395,9 +393,7 @@ function setGenomicNameFields(idtumornames){
         clinicDataQueryArray.push(content);
         $('#form #idbutton').clone(true).attr('id','addClinicValue').attr('name','addClinicValue').text("Add Value").attr('onclick', "setClinicNameFields('idtumornames')").appendTo('#idclinicdiv');
         $('#form #idbutton').clone(true).attr('id','deletebuttonclinic'+[clinicData-1]).attr('name','deletebuttonclinic'+[clinicData-1]).attr('onclick', "deleteClinicValue(this.id)").appendTo('#divclinicvalue'+[clinicData-1]);
-    };
-
-
+    }
     function deleteClinicValue(id){
         var a= id.replace("deletebuttonclinic", "divclinicvalue");
         $('#'+a).remove();
@@ -416,6 +412,27 @@ function setGenomicNameFields(idtumornames){
         $('#wrappertumorname').remove();
         $('#nameTumorname').remove();
         $('#'+id).remove();
+        queryarray=[];
+        console.log(queryarray);
+        genomicNameQueryArray=[];
+        console.log(genomicNameQueryArray);
+        genomicDataQueryArray=[];
+        console.log(genomicDataQueryArray);
+        clinicNameQueryArray=[];
+        console.log(clinicNameQueryArray);
+        clinicDataQueryArray=[];
+        console.log(clinicDataQueryArray);
+        genomicarray=[];
+        console.log(genomicarray);
+        variabileglobaledipresenza= false;
+        genomicdata=0;
+        console.log(genomicdata);
+        genomicname=0;
+        console.log(genomicname);
+        clinicData=0;
+        console.log(clinicData);
+        clinicName=0;
+        console.log(clinicName);
         setExperimentsNames();
     }
 
